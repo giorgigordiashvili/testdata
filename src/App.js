@@ -1,41 +1,48 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import {
-  ChakraProvider,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
   Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
+  Button,
 } from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import { useFormik } from 'formik';
+import Employee from './components/Employee';
+import { initialValues } from './initialValues';
+import { validationSchema } from './validationSchema';
+import { useQuery } from '@tanstack/react-query';
 
 function App() {
+  const laptopRef = useRef();
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+
+    onSubmit: values => {
+      console.log(values);
+    },
+  });
+
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
+    <Box backgroundColor="#F6F6F6" height="100vh">
+      <Tabs align="center">
+        <TabList border="none">
+          <Tab>თანამშრომლის ინფო</Tab>
+          <Tab ref={laptopRef}>ლეპტოპის მახასიათებლები</Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <Employee formik={formik} laptopRef={laptopRef} />
+            <Button onClick={formik.handleSubmit}>Submit</Button>
+          </TabPanel>
+          <TabPanel></TabPanel>
+        </TabPanels>
+      </Tabs>
+    </Box>
   );
 }
 
